@@ -28,6 +28,7 @@ type Entry struct {
 	ContentType string `json:"content-type"`
 	ContentDisposition string `json:"content-disposition"`
 	ExecutionMethod string `json:"execution-method"`
+	ExecutionData []string `json:"execution-data"`
 }
 
 var index Data
@@ -83,7 +84,7 @@ func loadContent(w http.ResponseWriter, r *http.Request, i int) {
             log.Fatal(err)
     	}
 
-		data, err = exec.Command(dir, r.RemoteAddr).Output()
+		data, err = exec.Command(dir, getExecutionData(index.Content[i].ExecutionData, r)...).Output()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -100,4 +101,15 @@ func loadContent(w http.ResponseWriter, r *http.Request, i int) {
 	if index.Content[i].ContentType != "" { w.Header().Set("Content-Type", index.Content[i].ContentType) }
 	if index.Content[i].ContentDisposition != "" { w.Header().Set("Content-Disposition", index.Content[i].ContentDisposition) }
 	w.Write(data)
+}
+
+func getExecutionData(requestedData []string, r *http.Request) []string {
+	var data []string 
+	for i := 0; i < len(requestedData); i++ {
+		switch requestedData[i] {
+		case "addr":
+			data = append(data, r.RemoteAddr)
+		}
+	}
+	return data
 }
