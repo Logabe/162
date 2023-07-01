@@ -60,7 +60,7 @@ func getPage(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("got %s request\n", r.URL.Path)
 	//If it's the root, load the latest entry
 	if r.URL.Path == "/" {
-		loadContent(w, r, index.Latest)
+		loadContent(w, r, len(index.Content - 1))
 	} else {
 		//Convert the URL to a string (minus the leading slash)
 		s := strings.ReplaceAll(r.URL.Path, "/", "")
