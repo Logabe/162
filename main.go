@@ -109,6 +109,8 @@ func getExecutionData(requestedData []string, r *http.Request) []string {
 		switch requestedData[i] {
 		case "addr":
 			data = append(data, r.RemoteAddr)
+		case "path":
+			data = append(data, r.URL.Path)
 		}
 	}
 	return data
