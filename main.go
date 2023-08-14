@@ -1,5 +1,3 @@
-//TODO: Fix up the index-out-of-bounds stuff
-
 package main
 
 import (
