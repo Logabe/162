@@ -3,8 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-
-	//"io"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -72,17 +70,20 @@ func getPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//At some point I'd like to separate these out into separate functions, but unless they grow somewhat in complexity, I'm unlikely to be bothered.
 func loadContent(w http.ResponseWriter, r *http.Request, i int) {
 	var data []byte
 	var err error
 	if (index.Content[i].ExecutionMethod == "execute"){
 		//Run the file, and print it's output
-		dir, err := filepath.Abs("Data/" + index.Content[i].Location)
+		file, err := filepath.Abs("Data/" + index.Content[i].Location)
 		if err != nil {
             log.Fatal(err)
     	}
 
-		data, err = exec.Command(dir, getExecutionData(index.Content[i].ExecutionData, r)...).Output()
+		cmd := exec.Command(file, getExecutionData(index.Content[i].ExecutionData, r)...)
+		cmd.Dir = filepath.Dir(file)
+		data, err = cmd.Output()
 		if err != nil {
 			log.Fatal(err)
 		}
