@@ -77,23 +77,15 @@ func loadContent(w http.ResponseWriter, r *http.Request, i int) {
 	if (index.Content[i].ExecutionMethod == "execute"){
 		//Run the file, and print it's output
 		file, err := filepath.Abs("Data/" + index.Content[i].Location)
-		if err != nil {
-            log.Fatal(err)
-    	}
 
 		cmd := exec.Command(file, getExecutionData(index.Content[i].ExecutionData, r)...)
 		cmd.Dir = filepath.Dir(file)
-		data, err = cmd.Output()
-		if err != nil {
-			log.Fatal(err)
-		}
+		data, _ = cmd.Output()
 
 	} else {
 		//Load the file from a location
 		data, err = os.ReadFile("Data/" + index.Content[i].Location)
-		if err != nil {
-			log.Fatal(err)
-		}
+		fmt.Printf("Couldn't load %s", index.Content[i].Location)
 	}
 
 	//Headers which can be loaded from JSON
@@ -106,10 +98,14 @@ func getExecutionData(requestedData []string, r *http.Request) []string {
 	var data []string 
 	for i := 0; i < len(requestedData); i++ {
 		switch requestedData[i] {
-		case "addr":
-			data = append(data, r.RemoteAddr)
-		case "path":
-			data = append(data, r.URL.Path)
+			case "addr":
+				data = append(data, r.RemoteAddr)
+			case "path":
+				data = append(data, r.URL.Path)
+			case "form":
+				r.ParseForm()
+				b, _ := json.Marshal(r.Form)
+				data = append(data, string(b))
 		}
 	}
 	return data
