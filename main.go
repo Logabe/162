@@ -76,7 +76,7 @@ func loadContent(w http.ResponseWriter, r *http.Request, i int) {
 	var err error
 	if (index.Content[i].ExecutionMethod == "execute"){
 		//Run the file, and print it's output
-		file, err := filepath.Abs("Data/" + index.Content[i].Location)
+		file, _ := filepath.Abs("Data/" + index.Content[i].Location)
 
 		cmd := exec.Command(file, getExecutionData(index.Content[i].ExecutionData, r)...)
 		cmd.Dir = filepath.Dir(file)
