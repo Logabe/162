@@ -85,7 +85,9 @@ func loadContent(w http.ResponseWriter, r *http.Request, i int) {
 	} else {
 		//Load the file from a location
 		data, err = os.ReadFile("Data/" + index.Content[i].Location)
-		fmt.Printf("Couldn't load %s", index.Content[i].Location)
+		if err != nil {
+			fmt.Printf("Couldn't load %s", index.Content[i].Location)
+		}
 	}
 
 	//Headers which can be loaded from JSON
