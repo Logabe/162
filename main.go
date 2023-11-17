@@ -82,6 +82,9 @@ func loadContent(w http.ResponseWriter, r *http.Request, i int) {
 		cmd.Dir = filepath.Dir(file)
 		data, _ = cmd.Output()
 
+	} else if (index.Content[i].ExecutionMethod == "redirect") {
+		http.Redirect(w, r, index.Content[i].Location, http.StatusSeeOther)
+		return
 	} else {
 		//Load the file from a location
 		data, err = os.ReadFile("Data/" + index.Content[i].Location)
